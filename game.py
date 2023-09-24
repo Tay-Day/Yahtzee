@@ -14,6 +14,9 @@ class Dice:
         else:
             self.roll()
     
+    def get_hand(self):
+        return self.values
+    
     def roll(self):
         """
         Sets dice to random numbers based on how many sides we have
