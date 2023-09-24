@@ -21,7 +21,7 @@ class Dice:
         """
         Sets dice to random numbers based on how many sides we have
         """
-        self.values = [random.randint(1, numSides) for i in range(0, numRolls)]
+        self.values = [random.randint(1, numSides) for _ in range(0, numRolls)]
         self.values.sort()
     
     def roll_keeping(self, index):
@@ -30,6 +30,7 @@ class Dice:
         self.values[index] = random.randint(1, numSides)
     
     def generate_successors(self, index):
+        self.values.sort()
         if index >= numRolls:
             return [Dice(self.values.copy())]
         successors = []
@@ -44,6 +45,7 @@ class Dice:
         Modified scoring algorithm for simplicity with expectimax
         TODO add full yhatzee functionality
         """ 
+        self.values.sort()
         if self.check_yatzee():
             return 50
         elif self.check_high_straight():
