@@ -10,7 +10,6 @@ class Dice:
         """
         if len(args) > 0 and isinstance(args[0], list):
             self.values = args[0]
-            self.values.sort()
         else:
             self.roll()
     
@@ -22,7 +21,6 @@ class Dice:
         Sets dice to random numbers based on how many sides we have
         """
         self.values = [random.randint(1, numSides) for _ in range(0, numRolls)]
-        self.values.sort()
     
     def roll_keeping(self, index):
         if index >= numRolls:
@@ -30,7 +28,8 @@ class Dice:
         self.values[index] = random.randint(1, numSides)
     
     def generate_successors(self, index):
-        self.values.sort()
+        hand = self.values.copy()
+        hand.sort()
         if index >= numRolls:
             return [Dice(self.values.copy())]
         successors = []
@@ -45,19 +44,22 @@ class Dice:
         Modified scoring algorithm for simplicity with expectimax
         TODO add full yhatzee functionality
         """ 
-        self.values.sort()
+        hand = self.values.copy()
+        hand.sort()
         if self.check_yatzee():
-            return 50
+            return 70
         elif self.check_high_straight():
-            return 40
+            return 50
         elif self.check_low_straight():
-            return 30
+            return 40
         elif self.check_full_house():
-            return 25
-        elif self.check_four_kind() or self.check_three_kind():
-            return self.add_up()
+            return 30
+        elif self.check_four_kind():
+            return max(25, self.add_up())
+        elif self.check_three_kind():
+            return max(15, self.add_up())
         else:
-            return 0
+            return self.add_up()
 
     
     def add_up(self):
@@ -71,7 +73,8 @@ class Dice:
         function checks if there are at least two equal dice in the dice list.
         - returns bool
         """
-        hand = self.values
+        hand = self.values.copy()
+        hand.sort()
         if (len(set(hand))) > 4:
             return False
         return True
@@ -84,7 +87,8 @@ class Dice:
         - updates scores
         - returns bool
         '''
-        hand = self.values
+        hand = self.values.copy()
+        hand.sort()
         if (hand[0] == hand[1] and hand[2] == hand[3]) or (hand[0] == hand[1] and hand[3] == hand[4]) or (hand[1] == hand[2] and hand[3] == hand[4]):
             return True
         return False
@@ -94,7 +98,8 @@ class Dice:
         function checks if there are at least three identical dice in the dice list.
         - updates scores
         '''
-        hand = self.values
+        hand = self.values.copy()
+        hand.sort()
         if hand[0] == hand[2] or hand[1] == hand[3] or hand[2] == hand[4]:
             return True
         return False
@@ -105,7 +110,8 @@ class Dice:
         - updates scores
         - returns bool
         '''
-        hand = self.values
+        hand = self.values.copy()
+        hand.sort()
         if hand[0] == hand[3] or hand[1] == hand[4]:
             return True
         return False
@@ -116,7 +122,8 @@ class Dice:
         function checks if the dice in the dice list are in sequence 1-5. Only for hands of size 5
         - returns bool
         '''
-        hand = self.values
+        hand = self.values.copy()
+        hand.sort()
         if len(set(hand)) == 5 and hand[4] == 5 and hand[0] == 1:
             return True
         return False
@@ -126,7 +133,8 @@ class Dice:
         function checks if the dice in the dice list are in sequence 2-6. Only for hands of size 5
         - returns bool
         '''
-        hand = self.values
+        hand = self.values.copy()
+        hand.sort()
         if len(set(hand)) == 5 and hand[4] == 6 and hand[0] == 2:
             return True
         return False
@@ -136,7 +144,8 @@ class Dice:
         function checks if the dice are two equal plus three equal in the dice list. Only works for hands of size 5.
         - returns bool
         """
-        hand = self.values
+        hand = self.values.copy()
+        hand.sort()
         #if the set representation of the list is 2, we have a possible full house. 
         if len(self.values) != 5:
             return False
@@ -150,7 +159,8 @@ class Dice:
         """
         if unique set then its a yhatzee
         """
-        hand = self.values
+        hand = self.values.copy()
+        hand.sort()
         if len(set(hand)) == 1:
             return True
         return False

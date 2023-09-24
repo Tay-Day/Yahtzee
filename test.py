@@ -52,6 +52,10 @@ class TestYahtzeeScores(unittest.TestCase):
         bestMove = expectimax.expectimax_Yhatzee(dice, 0)
         dice.roll_keeping(bestMove)
         bestMove = expectimax.expectimax_Yhatzee(dice, 1)
+        
+        testHand = [3, 2, 6, 4, 5]
+        dice = game.Dice(testHand)
+        bestMove = expectimax.expectimax_Yhatzee(dice, 0)
         dice.roll_keeping(bestMove)
 
 if __name__ == '__main__':
