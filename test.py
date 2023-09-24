@@ -1,5 +1,6 @@
 import unittest
 import game
+import expectimax
 
 class TestYahtzeeScores(unittest.TestCase):
     def test_basicHands(self):
@@ -31,7 +32,27 @@ class TestYahtzeeScores(unittest.TestCase):
         self.assertTrue(game.Dice(testHand).check_one_pair())
         testHand = [1, 3, 4, 6, 2]
         self.assertEquals(game.Dice(testHand).add_up(), 16)
+    def test_basicExpectimax(self):
+        dice = game.Dice()
+        bestMove = expectimax.expectimax_Yhatzee(dice, 0)
+        dice.roll_keeping(bestMove)
+        bestMove = expectimax.expectimax_Yhatzee(dice, 1)
+        dice.roll_keeping(bestMove)
+        bestMove = expectimax.expectimax_Yhatzee(dice, 2)
+        dice.roll_keeping(bestMove)
+        self.assertGreaterEqual(dice.score_hand(), 0)
 
+        testHand = [1, 6, 6, 6, 6]
+        dice = game.Dice(testHand)
+        bestMove = expectimax.expectimax_Yhatzee(dice, 0)
+        self.assertEquals(bestMove, 0)
+
+        testHand = [1, 6, 6, 6, 1]
+        dice = game.Dice(testHand)
+        bestMove = expectimax.expectimax_Yhatzee(dice, 0)
+        dice.roll_keeping(bestMove)
+        bestMove = expectimax.expectimax_Yhatzee(dice, 1)
+        dice.roll_keeping(bestMove)
 
 if __name__ == '__main__':
     unittest.main()

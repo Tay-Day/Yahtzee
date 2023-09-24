@@ -4,17 +4,15 @@ numSides = 6
 numRolls = 5
 class Dice:
 
-    def __init__(self):
+    def __init__(self, *args):
         """
         Initializes dice to random numbers according to sides and number of dice
         """
-        self.roll
-    def __init__(self, hand):
-        """
-        Initializes dice to random numbers according to sides and number of dice
-        """
-        self.values = hand
-        hand.sort()
+        if len(args) > 0 and isinstance(args[0], list):
+            self.values = args[0]
+            self.values.sort()
+        else:
+            self.roll()
     
     def roll(self):
         """
@@ -22,11 +20,40 @@ class Dice:
         """
         self.values = [random.randint(1, numSides) for i in range(0, numRolls)]
         self.values.sort()
+    
+    def roll_keeping(self, index):
+        if index >= numRolls:
+            return
+        self.values[index] = random.randint(1, numSides)
+    
+    def generate_successors(self, index):
+        if index >= numRolls:
+            return [Dice(self.values.copy())]
+        successors = []
+        for n in range(1, 7):
+            hand = self.values.copy()
+            hand[index] = n
+            successors.append(Dice(hand.copy()))
+        return successors
 
     def score_hand(self):
         """
-        Returns the score of a Yatzhee hand
+        Modified scoring algorithm for simplicity with expectimax
+        TODO add full yhatzee functionality
         """ 
+        if self.check_yatzee():
+            return 50
+        elif self.check_high_straight():
+            return 40
+        elif self.check_low_straight():
+            return 30
+        elif self.check_full_house():
+            return 25
+        elif self.check_four_kind() or self.check_three_kind():
+            return self.add_up()
+        else:
+            return 0
+
     
     def add_up(self):
         """
